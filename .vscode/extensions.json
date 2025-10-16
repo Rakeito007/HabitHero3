@@ -1,0 +1,26 @@
+{
+  "recommendations": [
+    // Essential for React Native development
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    
+    // TypeScript support
+    "ms-vscode.vscode-typescript-next",
+    
+    // React Native specific
+    "msjsdiag.vscode-react-native",
+    
+    // Code quality
+    "streetsidesoftware.code-spell-checker",
+    
+    // Git integration
+    "eamodio.gitlens",
+    
+    // Utilities
+    "christian-kohler.path-intellisense",
+    "formulahendry.auto-rename-tag",
+    "naumovs.color-highlight"
+  ],
+  "unwantedRecommendations": []
+}

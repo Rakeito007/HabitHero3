@@ -1,0 +1,201 @@
+# Cursor AI Rules for Habit Hero
+
+## Project Context
+This is a React Native + Expo app for habit tracking with the following stack:
+- React Native 0.76.7 with Expo SDK 53
+- TypeScript (strict mode)
+- NativeWind (Tailwind CSS for React Native)
+- Zustand for state management
+- React Navigation for routing
+- Apple StoreKit for in-app purchases
+
+## Code Style & Standards
+
+### General Rules
+- Always use TypeScript with strict typing
+- Use functional components with hooks
+- Prefer `const` over `let`, avoid `var`
+- Use async/await over promises when possible
+- Always handle errors gracefully with try/catch
+- Use double quotes for strings (never single quotes with apostrophes inside)
+
+### React Native Specific
+- Use `Pressable` instead of TouchableOpacity
+- Import SafeAreaView from 'react-native-safe-area-context' (not react-native)
+- Use `@react-navigation/native-stack` for navigation
+- Avoid `Alert.alert()` - use custom modals instead
+
+### Styling
+- Use NativeWind/Tailwind classes via `className` prop
+- For animations, use inline `style` prop with Animated components
+- Use the `cn()` helper from @/utils/cn for conditional classes
+- Follow Apple Human Interface Guidelines for design
+- Default colors: black buttons, white text, minimal UI
+
+### Animations & Gestures
+- Use `react-native-reanimated` v3 (not Animated from react-native)
+- Use `react-native-gesture-handler` for gestures
+- Always check latest documentation when implementing animations
+
+### State Management
+- Use Zustand with AsyncStorage for persistence
+- Store files go in `/src/state/`
+- Only persist necessary data (don't persist everything)
+- Use selectors to prevent unnecessary re-renders
+
+### Imports
+- Use relative imports (not absolute paths yet)
+- Group imports: React → React Native → Third Party → Local
+- Remove unused imports immediately
+- Use barrel exports where appropriate
+
+### File Organization
+```
+src/
+├── api/          # API clients (OpenAI, Anthropic, etc.)
+├── components/   # Reusable UI components
+├── navigation/   # Navigation configuration
+├── screens/      # Screen components
+├── services/     # Business logic services
+├── state/        # Zustand stores
+├── types/        # TypeScript types
+└── utils/        # Helper functions
+```
+
+## Common Patterns
+
+### Screen Template
+```typescript
+import React from 'react';
+import { View, Text, ScrollView, Pressable } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { useHabitStore } from '../state/habitStore';
+import { getTheme } from '../utils/theme';
+
+interface MyScreenProps {
+  navigation: any;
+  route?: any;
+}
+
+const MyScreen: React.FC<MyScreenProps> = ({ navigation }) => {
+  const { settings } = useHabitStore();
+  const theme = getTheme(settings.theme);
+
+  return (
+    <View className="flex-1" style={{ backgroundColor: theme.background }}>
+      <SafeAreaView className="flex-1">
+        {/* Content */}
+      </SafeAreaView>
+    </View>
+  );
+};
+
+export default MyScreen;
+```
+
+### Button Pattern
+```typescript
+<Pressable
+  onPress={handlePress}
+  className="py-4 px-6 rounded-full"
+  style={{ backgroundColor: '#000' }}
+>
+  <Text className="text-white font-bold text-center">
+    Button Text
+  </Text>
+</Pressable>
+```
+
+### Modal Pattern
+```typescript
+<Modal
+  visible={showModal}
+  transparent={true}
+  animationType="fade"
+  onRequestClose={() => setShowModal(false)}
+>
+  <View className="flex-1 items-center justify-center" 
+    style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
+    {/* Modal content */}
+  </View>
+</Modal>
+```
+
+## API Usage
+
+### AI Services
+- OpenAI client: `src/api/openai.ts`
+- Anthropic client: `src/api/anthropic.ts`
+- Grok client: `src/api/grok.ts`
+- Chat service: `src/api/chat-service.ts` (unified interface)
+
+### Image Generation
+- Use `generateImage()` from `src/api/image-generation.ts`
+- Model: gpt-image-1 (OpenAI's latest)
+
+### Audio Transcription
+- Use `transcribeAudio()` from `src/api/transcribe-audio.ts`
+- Model: gpt-4o-transcribe (OpenAI)
+
+## Camera Implementation
+```typescript
+import { CameraView, useCameraPermissions } from 'expo-camera';
+
+// Use CameraView not Camera (deprecated)
+// Use inline style={{ flex: 1 }} not className for camera
+// Position overlay UI with absolute positioning
+```
+
+## In-App Purchases
+- IAP service: `src/services/iapService.ts`
+- Product IDs: com.vibecode.habithero.[monthly|yearly|lifetime]
+- Always implement restore purchases button
+- Test with sandbox accounts
+
+## Performance Tips
+- Use `useMemo` for expensive calculations
+- Use `useCallback` for functions passed to children
+- Use `React.memo` for components that re-render often
+- Set `removeClippedSubviews={true}` on ScrollViews with many items
+
+## Testing & Debugging
+- Build with EAS (not Expo Go) for IAP testing
+- Test on physical devices for camera/audio features
+- Use sandbox Apple accounts for IAP testing
+- Check TypeScript with: `npx tsc --noEmit`
+
+## What NOT to Do
+- ❌ Don't use single quotes with apostrophes inside: 'it's' → Use "it's"
+- ❌ Don't use Alert.alert() - use custom modals
+- ❌ Don't import SafeAreaView from react-native
+- ❌ Don't use old Camera API - use CameraView
+- ❌ Don't use Animated from react-native - use reanimated
+- ❌ Don't manage git or dev server (handled by Vibecode system)
+- ❌ Don't install new packages - use what's in package.json
+- ❌ Don't use npm - use bun instead
+
+## Accessibility
+- Add meaningful labels to Pressable components
+- Use proper heading hierarchy
+- Ensure sufficient color contrast
+- Support dynamic text sizing
+
+## Privacy & Security
+- All data stored locally with AsyncStorage
+- Implement Face ID for app lock (optional)
+- No user data sent to servers (except AI API calls)
+- Follow Apple privacy guidelines
+
+## When Stuck
+1. Check existing implementations in codebase
+2. Use official docs for react-native-reanimated and gesture-handler
+3. Refer to Expo SDK 53 documentation
+4. Follow Apple Human Interface Guidelines for UX decisions
+
+## Current Project Status
+- ✅ Code complete and production-ready
+- ✅ IAP infrastructure implemented
+- ✅ Privacy disclosures configured
+- ⏳ Pending App Store Connect setup by user
+- 📱 iOS-optimized, dark theme default
