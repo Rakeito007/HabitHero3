@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import { View, Text, ScrollView, Pressable, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,6 +6,7 @@ import { useHabitStore } from '../state/habitStore';
 import { getTheme } from '../utils/theme';
 import SwipeableHabitCard from '../components/SwipeableHabitCard';
 import SwipeHint from '../components/SwipeHint';
+import BottomNavigation from '../components/BottomNavigation';
 import { useProFeatures } from '../utils/proFeatures';
 
 interface DashboardScreenProps {
@@ -13,11 +14,12 @@ interface DashboardScreenProps {
 }
 
 const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigation }) => {
-  const { habits, settings } = useHabitStore();
+  const { habits, settings, deleteHabit } = useHabitStore();
   const theme = useMemo(() => getTheme(settings.theme), [settings.theme]);
   const [showSwipeHint, setShowSwipeHint] = React.useState(false);
   const [showAnalytics, setShowAnalytics] = React.useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = React.useState(false);
+  const [activeTab, setActiveTab] = useState('dashboard');
   
   // Memoize expensive filtering and sorting - MOVED UP
   const activeHabits = useMemo(() => 
@@ -28,6 +30,29 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigation }) => {
   );
   
   const { canAccessAnalytics, canAddUnlimitedHabits, maxHabitsForFree } = useProFeatures();
+
+  // Handle habit actions
+  const handleEditHabit = useCallback((habitId: string) => {
+    navigation.navigate('EditHabit', { habitId });
+  }, [navigation]);
+
+  const handleArchiveHabit = useCallback((habitId: string) => {
+    deleteHabit(habitId);
+  }, [deleteHabit]);
+
+  const handleTabPress = useCallback((tab: string) => {
+    setActiveTab(tab);
+    if (tab === 'insights') {
+      if (canAccessAnalytics) {
+        setShowAnalytics(true);
+      } else {
+        setShowUpgradeModal(true);
+      }
+    } else if (tab === 'habits') {
+      // Navigate to habits list view
+      // This could be a different screen or modal
+    }
+  }, [canAccessAnalytics]);
   
 
   
@@ -292,6 +317,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigation }) => {
                   habit={habit}
                   theme={theme}
                   onPress={() => handleHabitPress(habit.id)}
+                  onEdit={() => handleEditHabit(habit.id)}
+                  onArchive={() => handleArchiveHabit(habit.id)}
                 />
               ))}
             </>
@@ -576,6 +603,12 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigation }) => {
           </View>
         </View>
       </Modal>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation 
+        activeTab={activeTab}
+        onTabPress={handleTabPress}
+      />
     </View>
   );
 };

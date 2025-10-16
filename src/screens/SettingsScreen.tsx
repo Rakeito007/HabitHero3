@@ -536,6 +536,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation, route }) =>
             </View>
           </View>
           
+          
           {/* Feedback */}
           <View className="mb-6">
             <Text 

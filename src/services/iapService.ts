@@ -70,7 +70,6 @@ class IAPService {
 
   /**
    * Initialize the IAP service
-   * In a real implementation, this would connect to StoreKit
    */
   async initialize(): Promise<boolean> {
     try {
@@ -79,10 +78,8 @@ class IAPService {
         return false;
       }
 
-      // In real implementation:
-      // await InAppPurchases.connectAsync();
-      // await this.restorePurchases();
-      
+      // For development/testing - simulate IAP initialization
+      console.log('IAP service initialized (development mode)');
       return true;
     } catch (error) {
       console.error('IAP initialization failed:', error);
@@ -92,15 +89,11 @@ class IAPService {
 
   /**
    * Get available products from App Store
-   * In real implementation, this fetches from StoreKit
    */
   async getProducts() {
     try {
-      // In real implementation:
-      // const { results } = await InAppPurchases.getProductsAsync(Object.values(PRODUCT_IDS));
-      // return results;
-
-      // Mock products for development
+      // For now, return mock products for testing
+      // In production, implement real product fetching
       return [
         {
           productId: PRODUCT_IDS.MONTHLY,
@@ -144,26 +137,9 @@ class IAPService {
         return false;
       }
 
-      // In real implementation with expo-in-app-purchases:
-      /*
-      const { results } = await InAppPurchases.purchaseItemAsync(productId);
-      
-      if (results && results.length > 0) {
-        const purchase = results[0];
-        
-        // Verify receipt with your server
-        const verified = await this.verifyReceipt(purchase.transactionReceipt);
-        
-        if (verified) {
-          await this.savePurchase(productId, purchase);
-          await InAppPurchases.finishTransactionAsync(purchase, true);
-          return true;
-        }
-      }
-      */
-
-      // For development/testing - simulate purchase
-      await this.simulatePurchase(productId);
+      // For now, simulate purchase for testing
+      // In production, implement real IAP logic
+      await this.savePurchase(productId);
       return true;
 
     } catch (error: any) {
@@ -192,22 +168,8 @@ class IAPService {
         return false;
       }
 
-      // In real implementation:
-      /*
-      const { results } = await InAppPurchases.getPurchaseHistoryAsync();
-      
-      if (results && results.length > 0) {
-        // Find the most recent active subscription or lifetime purchase
-        const activePurchase = this.findActivePurchase(results);
-        
-        if (activePurchase) {
-          await this.savePurchase(activePurchase.productId, activePurchase);
-          return true;
-        }
-      }
-      */
-
-      // Check local storage for development
+      // For now, check local storage for testing
+      // In production, implement real purchase history
       const storedPurchase = await AsyncStorage.getItem(PURCHASE_STORAGE_KEY);
       return !!storedPurchase;
 
@@ -267,12 +229,27 @@ class IAPService {
   }
 
   /**
-   * Simulate purchase for development
-   * REMOVE THIS IN PRODUCTION
+   * Find the most recent active purchase from purchase history
    */
-  private async simulatePurchase(productId: string) {
-    await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate processing
-    await this.savePurchase(productId);
+  private findActivePurchase(purchases: any[]): any | null {
+    // Sort by transaction date (most recent first)
+    const sortedPurchases = purchases.sort((a, b) => 
+      new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime()
+    );
+
+    // Look for lifetime purchase first
+    const lifetimePurchase = sortedPurchases.find(p => p.productId === PRODUCT_IDS.LIFETIME);
+    if (lifetimePurchase) {
+      return lifetimePurchase;
+    }
+
+    // Look for active subscription
+    const activeSubscription = sortedPurchases.find(p => 
+      (p.productId === PRODUCT_IDS.MONTHLY || p.productId === PRODUCT_IDS.YEARLY) &&
+      p.isActive
+    );
+
+    return activeSubscription || null;
   }
 
   /**

@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Habit, HabitEntry, HabitStats, AppSettings, SubscriptionStatus } from '../types/habit';
 import { simpleProtectedFunction, SIMPLE_CONSTANTS } from '../security/SimpleProtection';
+import { widgetService } from '../services/widgetService';
 
 interface HabitStore {
   habits: Habit[];
@@ -34,6 +35,7 @@ interface HabitStore {
   
   // Settings
   updateSettings: (updates: Partial<AppSettings>) => void;
+  
   
   // Security methods
   updateSecurityStatus: (violations: number) => void;
@@ -202,6 +204,8 @@ export const useHabitStore = create<HabitStore>()(
             entries: [...state.entries, entry],
           }));
         }
+        
+        // Widget data update removed for testing
       },
       
       updateHabitEntry: (habitId, date, updates) => {
@@ -345,6 +349,8 @@ export const useHabitStore = create<HabitStore>()(
           }
         }
       },
+      
+      
       // Add faster hydration options
       version: 1,
       migrate: (persistedState: any, version: number) => {

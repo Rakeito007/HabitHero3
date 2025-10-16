@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Habit } from '../types/habit';
 import { useHabitStore } from '../state/habitStore';
 import HabitGridChart from './HabitGridChart';
+import HabitCalendarModal from './HabitCalendarModal';
 import { showHabitNotification } from './NotificationManager';
 
 interface HabitCardProps {
   habit: Habit;
   theme: any;
   onPress?: () => void;
+  onEdit?: () => void;
+  onArchive?: () => void;
   showChart?: boolean;
 }
 
@@ -17,9 +20,12 @@ const HabitCard: React.FC<HabitCardProps> = ({
   habit, 
   theme, 
   onPress, 
+  onEdit,
+  onArchive,
   showChart = true 
 }) => {
   const { getHabitStats, toggleHabitEntry, getHabitEntry } = useHabitStore();
+  const [showCalendar, setShowCalendar] = useState(false);
   const stats = getHabitStats(habit.id);
   
   const today = new Date().toISOString().split('T')[0];
@@ -41,12 +47,36 @@ const HabitCard: React.FC<HabitCardProps> = ({
     }
   };
   
+  const handleCardPress = () => {
+    if (onPress) {
+      onPress();
+    } else {
+      setShowCalendar(true);
+    }
+  };
+
+  const handleEdit = () => {
+    setShowCalendar(false);
+    if (onEdit) onEdit();
+  };
+
+  const handleArchive = () => {
+    setShowCalendar(false);
+    if (onArchive) onArchive();
+  };
+
+  const handleShare = () => {
+    // Share functionality will be implemented
+    setShowCalendar(false);
+  };
+
   return (
-    <Pressable
-      onPress={onPress}
-      className="rounded-xl p-4 mb-4"
-      style={{ backgroundColor: theme.cardBackground }}
-    >
+    <>
+      <Pressable
+        onPress={handleCardPress}
+        className="rounded-xl p-4 mb-4"
+        style={{ backgroundColor: theme.cardBackground }}
+      >
       {/* Header */}
       <View className="flex-row items-center justify-between mb-3">
         <View className="flex-row items-center flex-1">
@@ -154,6 +184,17 @@ const HabitCard: React.FC<HabitCardProps> = ({
         </View>
       )}
     </Pressable>
+
+    {/* Calendar Modal */}
+    <HabitCalendarModal
+      visible={showCalendar}
+      habit={habit}
+      onClose={() => setShowCalendar(false)}
+      onEdit={handleEdit}
+      onArchive={handleArchive}
+      onShare={handleShare}
+    />
+    </>
   );
 };
 

@@ -11,6 +11,8 @@ interface SwipeableHabitCardProps {
   habit: Habit;
   theme: any;
   onPress?: () => void;
+  onEdit?: () => void;
+  onArchive?: () => void;
   showChart?: boolean;
 }
 
@@ -18,6 +20,8 @@ const SwipeableHabitCard: React.FC<SwipeableHabitCardProps> = ({
   habit, 
   theme, 
   onPress, 
+  onEdit,
+  onArchive,
   showChart = true,
 }) => {
   const { getHabitStats, toggleHabitEntry, getHabitEntry, deleteHabit, entries } = useHabitStore();
