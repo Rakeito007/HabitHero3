@@ -44,7 +44,7 @@ import { SubscriptionStatus } from '../types/habit';
 export const PRODUCT_IDS = {
   MONTHLY: 'com.vibecode.habithero.monthly',
   YEARLY: 'com.habithero.yearly.pro',
-  LIFETIME: 'com.vibecode.habithero.lifetime',
+  LIFETIME: 'com.habithero.lifetime.pro',
 };
 
 const PURCHASE_STORAGE_KEY = '@habit_hero_purchases';
