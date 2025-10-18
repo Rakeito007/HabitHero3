@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.vibecode.habithero",
-      "buildNumber": "29",
+      "buildNumber": "30",
       "infoPlist": {
         "NSCameraUsageDescription": "Habit Hero uses the camera to let you take progress photos and visual reminders for your habits.",
         "NSMicrophoneUsageDescription": "Habit Hero uses the microphone to record voice notes and audio reminders to help you track your habit progress.",
