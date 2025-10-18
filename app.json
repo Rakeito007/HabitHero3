@@ -3,7 +3,7 @@
     "name": "Habit Hero",
     "slug": "habit-hero",
     "scheme": "habit-hero",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
 
@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.vibecode.habithero",
-      "buildNumber": "28",
+      "buildNumber": "29",
       "infoPlist": {
         "NSCameraUsageDescription": "Habit Hero uses the camera to let you take progress photos and visual reminders for your habits.",
         "NSMicrophoneUsageDescription": "Habit Hero uses the microphone to record voice notes and audio reminders to help you track your habit progress.",
