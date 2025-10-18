@@ -28,7 +28,7 @@ jobs:
         
     - name: Build iOS with EAS
       run: |
-        npm install -g @expo/eas-cli
+        npm install -g eas-cli
         eas build --platform ios --profile app-store --non-interactive
         
     - name: Download build artifacts
