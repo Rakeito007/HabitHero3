@@ -43,7 +43,7 @@ import { SubscriptionStatus } from '../types/habit';
 // Product IDs - MUST match App Store Connect
 export const PRODUCT_IDS = {
   MONTHLY: 'com.vibecode.habithero.monthly',
-  YEARLY: 'com.vibecode.habithero.yearly',
+  YEARLY: 'com.habithero.yearly.pro',
   LIFETIME: 'com.vibecode.habithero.lifetime',
 };
 
