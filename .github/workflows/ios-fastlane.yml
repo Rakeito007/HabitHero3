@@ -26,10 +26,14 @@ jobs:
         expo-version: latest
         token: ${{ secrets.EXPO_TOKEN }}
         
+    - name: Install EAS CLI
+      run: |
+        npm install -g eas-cli
+        
     - name: Build iOS with EAS (Development Profile)
       run: |
         # Use development profile which is more reliable
-        npx eas build --platform ios --profile development --non-interactive
+        eas build --platform ios --profile development --non-interactive
         
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
